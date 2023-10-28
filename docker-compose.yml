@@ -1,0 +1,48 @@
+version: '3.8'
+services:
+  # Service name
+  node:
+    # Creating a custom image
+    build:
+      # Location to the Dockerfile
+      context: ./backend
+      # Name of the Dockerfile
+      dockerfile: Dockerfile
+    ports:
+        # External port:Internal port
+      - "5000:5000"
+    depends_on:
+      - mymongo
+    networks:
+      - app-network
+  react:
+    # Creating a custom image
+    build:
+      # Location to the Dockerfile
+      context: ./frontend
+      # Name of the Dockerfile
+      dockerfile: Dockerfile
+    ports:
+        # External port:Internal port
+      - "3000:3000"
+    depends_on:
+      - node
+    networks:
+      - app-network
+  mymongo:
+    image: "mongo"
+    volumes:
+      - data-volume:/data/db
+    ports:
+        # External port:Internal port
+      - "27017:27017"
+    networks:
+      - app-network
+networks:
+  app-network:
+  
+volumes:
+  data-volume:
+  node_modules:
+  web-root:
+    driver: local
